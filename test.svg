@@ -1,8 +1,0 @@
-/home/rob/git/scala/svg/./svg.scala:13: error: not enough arguments for constructor triangle: (len: Double, x1: Double, y1: Double)this.triangle.
-Unspecified value parameters len, x1, y1.
-class trielem extends triangle {
-              ^
-/home/rob/git/scala/svg/./svg.scala:20: error: too many arguments for constructor trielem: ()this.trielem
-  val tr = new trielem(100, 100,0)
-           ^
-two errors found
