@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./svg.scala > farawaylogo.svg
+./svg.scala $1 $2 > farawaylogo.svg
