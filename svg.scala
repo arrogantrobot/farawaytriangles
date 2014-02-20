@@ -36,7 +36,8 @@ object SVG {
   def iterate(c: Triangle, dims: List[Triangle], iters: Int):List[Triangle] = {
     if (iters == 0) dims
     else 
-      dims ++ bigLeft(c) ++ triforce(c) ++ iterate(new Triangle(c.len/2, c.x1 + c.len * .25, c.y1 + (c.len/2*sqrt3/2)), dims, iters -1)
+      val t = new Triangle(c.len/2, c.x1 + c.len * .25, c.y1 + (c.len/2*sqrt3/2))
+      dims ++ bigLeft(c) ++ triforce(c) ++ iterate(t, dims, iters -1)
   }
 
   def output():Unit = {
