@@ -1,9 +1,7 @@
-#!/bin/bash
-exec scala -savecompiled "$0" "$@"
-!#
-
+package com.farawaylabs.scala.logo
 import scala.xml.Elem
-class Triangle(val len: Double, val x1: Double, val y1: Double) {
+
+case class Triangle(val len: Double, val x1: Double, val y1: Double) {
   val sqrt3 = 1.7320508075688772
   val x2 = x1 + len/2 
   val y2 = y1 + sqrt3/2 * len
@@ -20,7 +18,7 @@ object SVG {
   def getSvg(objects: List[Triangle]):Elem = {
     val xml = 
       <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
-        { objects map {_.getXML} }
+         objects map _.getXML
       </svg>
     xml
   }
@@ -61,10 +59,11 @@ object SVG {
     val tris = iterate(new Triangle(len, len / 2, 0.0), List(), iterations)
     println(getSvg(tris))
   }
-}
 
-val argList = argv.toList.map(_.toInt)
-if (argList.length >= 2)
-  SVG.output(argList(0), argList(1))
-else
-  SVG.output()
+  def main(args: Array[String]) {
+    if (args.length >= 2)
+      SVG.output(args(0).toInt, args(1).toInt)
+    else
+      SVG.output()
+  }
+}

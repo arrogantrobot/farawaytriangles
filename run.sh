@@ -1,3 +1,4 @@
 #!/bin/bash
 
-./svg.scala $1 $2 > farawaylogo.svg
+sbt package
+scala target/scala-2.10/farawaytriangles_2.10-0.1-SNAPSHOT.jar com.farawaylabs.scala.logo.SVG
