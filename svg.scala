@@ -17,7 +17,7 @@ case class Triangle(val len: Double, val x1: Double, val y1: Double) {
 }
 
 object Triangle {
-  val tsf = 4
+  val tsf = 2
   def getRightSmallTriangle(triangle:Triangle):Triangle = {
     new Triangle(triangle.len/2,
       triangle.x1 - triangle.len * .25,
@@ -62,16 +62,18 @@ object SVG {
   def iterate(triangle: Triangle, dims: List[Triangle], iters: Int):List[Triangle] = {
     if (iters == 0) dims ++ Triangle.triforce(triangle)
     else  {
-      dims ++
-        Triangle.triforce(triangle) ++
+      dims ++ iterate(Triangle.triforce(triangle)(0), dims, iters -1) ++
+       iterate(Triangle.triforce(triangle)(1), dims, iters -1) ++
+       iterate(Triangle.triforce(triangle)(2), dims, iters -1)
+        /*Triangle.triforce(triangle) ++
         iterate(Triangle.getRightSmallTriangle(triangle), dims, iters - 1) ++
-        iterate(Triangle.getLeftSmallTriangle(triangle), dims, iters - 1)
+        iterate(Triangle.getLeftSmallTriangle(triangle), dims, iters - 1)*/
       /*
         iterate(Triangle.getRightSmallTriangle(triangle), dims, iters -1)*/
     }
   }
 
-  def output(len: Double = 1000.0, iterations: Int = 10):Unit = {
+  def output(len: Double = 1000.0, iterations: Int = 8):Unit = {
     val tris = iterate(new Triangle(len, len /2, 0.0), List(), iterations)
     val writer = new PrintWriter(new File("triforce.svg"))
     writer.write(getSvg(tris).toString())
