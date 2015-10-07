@@ -17,26 +17,41 @@ case class Triangle(val len: Double, val x1: Double, val y1: Double) {
 }
 
 object Triangle {
-  val tsf = 2
-  def getRightSmallTriangle(triangle:Triangle):Triangle = {
+  implicit val tsf = 2
+  def getRightSmallTriangle(triangle:Triangle, tsf:Int = tsf):Triangle = {
     new Triangle(triangle.len/2,
       triangle.x1 - triangle.len * .25,
       triangle.y1 + (triangle.len/2*triangle.sqrt3/2)
     )
   }
-  def getLeftSmallTriangle(triangle:Triangle):Triangle = {
+
+  def getRightSmallTriangle4(triangle:Triangle, tsf:Int = tsf):Triangle = {
+    getRightSmallTriangle(triangle, 4)
+  }
+
+  def getLeftSmallTriangle(triangle:Triangle, tsf:Int = tsf):Triangle = {
     new Triangle(triangle.len/2,
       triangle.x1 + triangle.len * .25,
       triangle.y1 + (triangle.len/2*triangle.sqrt3/2)
     )
   }
-  def getSmallTriangle(triangle:Triangle):Triangle = {
+
+  def getLeftSmallTriangle4(triangle:Triangle, tsf:Int = tsf):Triangle = {
+    getLeftSmallTriangle(triangle, 4)
+  }
+
+  def getSmallTriangle(triangle:Triangle, tsf:Int = tsf):Triangle = {
     new Triangle(triangle.len/2,
       triangle.x1,
       triangle.y1 //+ (triangle.len/2*triangle.sqrt3/2)
     )
   }
-  def triforce(triangle: Triangle):List[Triangle] = {
+
+  def getSmallTriangle4(triangle:Triangle, tsf:Int = tsf):Triangle = {
+    getSmallTriangle(triangle, 4)
+  }
+
+  def triforce(triangle: Triangle, tsf:Int = tsf):List[Triangle] = {
     List(new Triangle(triangle.len/tsf, triangle.x1, triangle.y1),
       new Triangle(triangle.len/tsf,
         triangle.x1 - (triangle.len/(tsf*2)),
@@ -45,6 +60,10 @@ object Triangle {
         triangle.x1 + (triangle.len/(tsf*2)),
         triangle.y1 + (triangle.len/tsf*triangle.sqrt3/2))
     )
+  }
+
+  def triforce4(triangle: Triangle, tsf:Int = tsf):List[Triangle] = {
+    triforce(triangle, 4)
   }
 }
 
@@ -62,13 +81,25 @@ object SVG {
   def iterateTri(triangle: Triangle, dims: List[Triangle], iters: Int):List[Triangle] = {
     if (iters == 0) dims ++ Triangle.triforce(triangle)
     else  {
-      dims ++ iterateTri(Triangle.triforce(triangle)(0), dims, iters -1) ++
-       iterateTri(Triangle.triforce(triangle)(1), dims, iters -1) ++
-       iterateTri(Triangle.triforce(triangle)(2), dims, iters -1)
+      dims ++ iterateBi(Triangle.triforce(triangle)(0), dims, iters -1) ++
+       iterateBi(Triangle.triforce(triangle)(1), dims, iters -1) ++
+       iterateBi(Triangle.triforce(triangle)(2), dims, iters -1)
     }
   }
 
-  def output(len: Double = 1000.0, iterations: Int = 8):Unit = {
+  def iterateBi(triangle: Triangle, dims: List[Triangle], iters: Int):List[Triangle] = {
+    if (iters == 0) dims ++ Triangle.triforce4(triangle)
+    else  {
+      dims ++
+        Triangle.triforce4(triangle) ++
+        iterateTri(Triangle.getRightSmallTriangle4(triangle), dims, iters - 1) ++
+        iterateTri(Triangle.getLeftSmallTriangle4(triangle), dims, iters - 1)
+      /*
+        iterate(Triangle.getRightSmallTriangle(triangle), dims, iters -1)*/
+    }
+  }
+
+  def output(len: Double = 1000.0, iterations: Int = 12):Unit = {
     val tris = iterateTri(new Triangle(len, len /2, 0.0), List(), iterations)
     val writer = new PrintWriter(new File("triforce.svg"))
     writer.write(getSvg(tris).toString())
